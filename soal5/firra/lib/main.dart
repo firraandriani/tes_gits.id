@@ -7,7 +7,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const appTitle = 'Soal Nomor 2';
+    const appTitle = 'Soal Nomor 5';
 
     return MaterialApp(
       title: appTitle,
@@ -32,6 +32,19 @@ class MyCustomForm extends StatefulWidget {
 
 class MyCustomFormState extends State<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
+  var inputan = '';
+  var temp = '';
+  var value = [];
+  bool answer = false;
+
+  void submit() {
+    setState(() {
+      value = inputan.split(' ');
+      temp = value[0].split('').reversed.join();
+
+      answer = temp == value[value.length - 1] ? true : false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,41 +53,37 @@ class MyCustomFormState extends State<MyCustomForm> {
       child: Container(
         padding: EdgeInsets.all(20.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextFormField(
               autofocus: true,
+              keyboardType: TextInputType.text,
               decoration: new InputDecoration(
-                hintText: "Masukan Email Anda",
-                labelText: "Email",
+                hintText: "Masukan Kalimat atau Kata",
+                labelText: "Inputan",
                 border: OutlineInputBorder(
                     borderRadius: new BorderRadius.circular(5.0)),
               ),
-              validator: (value) {
-                var prefix = value.toString();
-                prefix = prefix.split('@')[0];
-                var p = r'^[\w-.]+@+\.+[\w-]+(.co.id|.id)$';
-                RegExp regex = new RegExp(p);
-                if (!regex.hasMatch(value!) ||
-                    prefix.length < 1 ||
-                    prefix.length > 20) {
-                  return 'Format Email Anda salah!';
-                }
-                return null;
+              onChanged: (value) {
+                setState(() {
+                  inputan = value;
+                });
               },
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Processing Data')),
-                    );
-                  }
-                },
-                child: const Text('Submit'),
-              ),
+            SizedBox(
+              height: 20.0,
+            ),
+            Text('$answer'),
+            SizedBox(
+              height: 20.0,
+            ),
+            ElevatedButton(
+              child: Text("Submit"),
+              style: ElevatedButton.styleFrom(
+                  primary: Colors.blue,
+                  textStyle: TextStyle(color: Colors.white)),
+              onPressed: () {
+                submit();
+              },
             ),
           ],
         ),
